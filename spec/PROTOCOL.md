@@ -17,7 +17,7 @@ Used to hash a fill. `vectors/canonical_json.json`.
 - Arrays: elements in order, joined with `,`, wrapped in `[]`.
 - No whitespace anywhere.
 - Strings are escaped exactly like JavaScript `JSON.stringify`: `\"`, `\\`, `\b`, `\f`, `\n`, `\r`, `\t`; other characters below U+0020 as `\u00xx` (lowercase hex); everything else, including `/`, U+007F, U+2028/U+2029 and all non-ASCII, is written as is (UTF-8).
-- Numbers: integers in the safe range ±(2^53 − 1) only, written in plain decimal; reject floats (even `1.0`). `true`, `false`, `null` as is.
+- Numbers: integers in the safe range ±(2^53 − 1) only, written in plain decimal. Never hash fractional numbers. (JavaScript cannot tell `1.0` from `1`, so the TypeScript and Rust SDKs write it as `1`; the Python and Go SDKs reject it. The protocol itself only hashes strings.) `true`, `false`, `null` as is.
 - Object members whose value is absent (JavaScript `undefined`) are left out; `null` is kept.
 
 ## Ledger
