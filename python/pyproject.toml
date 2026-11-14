@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "filobook"
+version = "0.1.0"
+description = "Python SDK for FiloBook, the order book for x402 agent calls: API client, ledger verifier and webhook signatures."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["filobook", "x402", "order-book", "agents", "usdg", "robinhood-chain"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://filobook.run"
+Documentation = "https://docs.filobook.run"
+Repository = "https://github.com/filobook/filobook-sdk"
+
+[dependency-groups]
+dev = ["pytest>=8", "mypy>=1.10"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/filobook"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
