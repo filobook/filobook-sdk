@@ -1,0 +1,99 @@
+{
+	"description": "input (a JSON value) -> canonical JSON string: keys sorted by UTF-16 code units at every level, no whitespace, strings escaped exactly like JavaScript JSON.stringify, integers only.",
+	"cases": [
+		{
+			"name": "flat object, keys sorted",
+			"input": {
+				"b": 1,
+				"a": "x",
+				"c": true
+			},
+			"output": "{\"a\":\"x\",\"b\":1,\"c\":true}"
+		},
+		{
+			"name": "nested objects and arrays",
+			"input": {
+				"z": [
+					3,
+					1,
+					{
+						"y": null,
+						"x": false
+					}
+				],
+				"a": {
+					"d": [],
+					"c": {}
+				}
+			},
+			"output": "{\"a\":{\"c\":{},\"d\":[]},\"z\":[3,1,{\"x\":false,\"y\":null}]}"
+		},
+		{
+			"name": "array order kept",
+			"input": [
+				3,
+				"b",
+				"a",
+				1
+			],
+			"output": "[3,\"b\",\"a\",1]"
+		},
+		{
+			"name": "scalars",
+			"input": [
+				"",
+				0,
+				-42,
+				9007199254740991,
+				true,
+				false,
+				null
+			],
+			"output": "[\"\",0,-42,9007199254740991,true,false,null]"
+		},
+		{
+			"name": "escapes",
+			"input": {
+				"s": "quote \" backslash \\ slash / tab \t newline \n cr \r bs \b ff \f"
+			},
+			"output": "{\"s\":\"quote \\\" backslash \\\\ slash / tab \\t newline \\n cr \\r bs \\b ff \\f\"}"
+		},
+		{
+			"name": "control characters",
+			"input": {
+				"s": "\u0000\u0001\u001f"
+			},
+			"output": "{\"s\":\"\\u0000\\u0001\\u001f\"}"
+		},
+		{
+			"name": "non-ASCII is not escaped",
+			"input": {
+				"é": "café ✓ 日本 😀   "
+			},
+			"output": "{\"é\":\"café ✓ 日本 😀   \"}"
+		},
+		{
+			"name": "keys sort by UTF-16 code units",
+			"input": {
+				"": 1,
+				"😀": 2,
+				"z": 3,
+				"Z": 4,
+				"é": 5,
+				"aa": 6,
+				"a": 7
+			},
+			"output": "{\"Z\":4,\"a\":7,\"aa\":6,\"z\":3,\"é\":5,\"😀\":2,\"\":1}"
+		},
+		{
+			"name": "fill payload shape",
+			"input": {
+				"saved": "0.01",
+				"price": "0.04",
+				"id": "fil_0000000000000001",
+				"created_at": "2026-01-01T00:00:00.000Z"
+			},
+			"output": "{\"created_at\":\"2026-01-01T00:00:00.000Z\",\"id\":\"fil_0000000000000001\",\"price\":\"0.04\",\"saved\":\"0.01\"}"
+		}
+	]
+}

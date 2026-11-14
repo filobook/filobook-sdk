@@ -1,0 +1,677 @@
+{
+	"description": "Each case: entries (oldest first, starting from genesis) and the fills they point to. Walk the entries in order and stop at the first failure. Checks per entry, in this order: gap (height != previous height + 1), prev_hash (!= previous hash; genesis = 64 zeros), hash (!= sha256(prev_hash + payload_hash)), missing_fill (no fill with id == ref), fill_mismatch (fill.ledger_height != height or fill.ledger_hash != hash), payload_hash (!= sha256(canonical_json(fill payload))). On failure, height/head are the last good position.",
+	"genesis": "0000000000000000000000000000000000000000000000000000000000000000",
+	"payload_fields": [
+		"id",
+		"order_id",
+		"agent",
+		"provider_id",
+		"provider_name",
+		"max_price",
+		"price",
+		"saved",
+		"created_at"
+	],
+	"payloads": [
+		{
+			"fill": {
+				"id": "fil_000000000001",
+				"order_id": "ord_0000000000000001",
+				"agent": "0x1111111111111111111111111111111111111111",
+				"provider_id": "prv_aaaaaaaaaaaa",
+				"provider_name": "Example Provider A",
+				"max_price": "0.05",
+				"price": "0.032",
+				"saved": "0.018",
+				"created_at": "2026-01-01T00:00:00.000Z"
+			},
+			"canonical": "{\"agent\":\"0x1111111111111111111111111111111111111111\",\"created_at\":\"2026-01-01T00:00:00.000Z\",\"id\":\"fil_000000000001\",\"max_price\":\"0.05\",\"order_id\":\"ord_0000000000000001\",\"price\":\"0.032\",\"provider_id\":\"prv_aaaaaaaaaaaa\",\"provider_name\":\"Example Provider A\",\"saved\":\"0.018\"}",
+			"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734"
+		},
+		{
+			"fill": {
+				"id": "fil_000000000002",
+				"order_id": "ord_0000000000000002",
+				"agent": "0x2222222222222222222222222222222222222222",
+				"provider_id": "prv_bbbbbbbbbbbb",
+				"provider_name": "Example Provider B",
+				"max_price": "1",
+				"price": "0.75",
+				"saved": "0.25",
+				"created_at": "2026-01-01T00:01:00.000Z"
+			},
+			"canonical": "{\"agent\":\"0x2222222222222222222222222222222222222222\",\"created_at\":\"2026-01-01T00:01:00.000Z\",\"id\":\"fil_000000000002\",\"max_price\":\"1\",\"order_id\":\"ord_0000000000000002\",\"price\":\"0.75\",\"provider_id\":\"prv_bbbbbbbbbbbb\",\"provider_name\":\"Example Provider B\",\"saved\":\"0.25\"}",
+			"payload_hash": "e1d63a3575042168675c5dde7338389b34c1533048f73e9fe362d75b04302d11"
+		},
+		{
+			"fill": {
+				"id": "fil_000000000003",
+				"order_id": "ord_0000000000000003",
+				"agent": "0x1111111111111111111111111111111111111111",
+				"provider_id": "prv_aaaaaaaaaaaa",
+				"provider_name": "Ëxample “Provider” A",
+				"max_price": "0.000002",
+				"price": "0.000001",
+				"saved": "0.000001",
+				"created_at": "2026-01-01T00:02:00.000Z"
+			},
+			"canonical": "{\"agent\":\"0x1111111111111111111111111111111111111111\",\"created_at\":\"2026-01-01T00:02:00.000Z\",\"id\":\"fil_000000000003\",\"max_price\":\"0.000002\",\"order_id\":\"ord_0000000000000003\",\"price\":\"0.000001\",\"provider_id\":\"prv_aaaaaaaaaaaa\",\"provider_name\":\"Ëxample “Provider” A\",\"saved\":\"0.000001\"}",
+			"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a"
+		}
+	],
+	"cases": [
+		{
+			"name": "valid chain",
+			"entries": [
+				{
+					"height": 1,
+					"kind": "fill",
+					"ref": "fil_000000000001",
+					"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734",
+					"prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+					"hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"created_at": "2026-01-01T00:00:00.000Z"
+				},
+				{
+					"height": 2,
+					"kind": "fill",
+					"ref": "fil_000000000002",
+					"payload_hash": "e1d63a3575042168675c5dde7338389b34c1533048f73e9fe362d75b04302d11",
+					"prev_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"created_at": "2026-01-01T00:01:00.000Z"
+				},
+				{
+					"height": 3,
+					"kind": "fill",
+					"ref": "fil_000000000003",
+					"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a",
+					"prev_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906",
+					"created_at": "2026-01-01T00:02:00.000Z"
+				}
+			],
+			"fills": [
+				{
+					"id": "fil_000000000001",
+					"order_id": "ord_0000000000000001",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Example Provider A",
+					"max_price": "0.05",
+					"price": "0.032",
+					"saved": "0.018",
+					"created_at": "2026-01-01T00:00:00.000Z",
+					"ledger_height": 1,
+					"ledger_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee"
+				},
+				{
+					"id": "fil_000000000002",
+					"order_id": "ord_0000000000000002",
+					"agent": "0x2222222222222222222222222222222222222222",
+					"provider_id": "prv_bbbbbbbbbbbb",
+					"provider_name": "Example Provider B",
+					"max_price": "1",
+					"price": "0.75",
+					"saved": "0.25",
+					"created_at": "2026-01-01T00:01:00.000Z",
+					"ledger_height": 2,
+					"ledger_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be"
+				},
+				{
+					"id": "fil_000000000003",
+					"order_id": "ord_0000000000000003",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Ëxample “Provider” A",
+					"max_price": "0.000002",
+					"price": "0.000001",
+					"saved": "0.000001",
+					"created_at": "2026-01-01T00:02:00.000Z",
+					"ledger_height": 3,
+					"ledger_hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906"
+				}
+			],
+			"expect": {
+				"ok": true,
+				"height": 3,
+				"head": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906"
+			}
+		},
+		{
+			"name": "empty ledger",
+			"entries": [],
+			"fills": [],
+			"expect": {
+				"ok": true,
+				"height": 0,
+				"head": "0000000000000000000000000000000000000000000000000000000000000000"
+			}
+		},
+		{
+			"name": "price edited in fill 2",
+			"entries": [
+				{
+					"height": 1,
+					"kind": "fill",
+					"ref": "fil_000000000001",
+					"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734",
+					"prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+					"hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"created_at": "2026-01-01T00:00:00.000Z"
+				},
+				{
+					"height": 2,
+					"kind": "fill",
+					"ref": "fil_000000000002",
+					"payload_hash": "e1d63a3575042168675c5dde7338389b34c1533048f73e9fe362d75b04302d11",
+					"prev_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"created_at": "2026-01-01T00:01:00.000Z"
+				},
+				{
+					"height": 3,
+					"kind": "fill",
+					"ref": "fil_000000000003",
+					"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a",
+					"prev_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906",
+					"created_at": "2026-01-01T00:02:00.000Z"
+				}
+			],
+			"fills": [
+				{
+					"id": "fil_000000000001",
+					"order_id": "ord_0000000000000001",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Example Provider A",
+					"max_price": "0.05",
+					"price": "0.032",
+					"saved": "0.018",
+					"created_at": "2026-01-01T00:00:00.000Z",
+					"ledger_height": 1,
+					"ledger_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee"
+				},
+				{
+					"id": "fil_000000000002",
+					"order_id": "ord_0000000000000002",
+					"agent": "0x2222222222222222222222222222222222222222",
+					"provider_id": "prv_bbbbbbbbbbbb",
+					"provider_name": "Example Provider B",
+					"max_price": "1",
+					"price": "0.70",
+					"saved": "0.25",
+					"created_at": "2026-01-01T00:01:00.000Z",
+					"ledger_height": 2,
+					"ledger_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be"
+				},
+				{
+					"id": "fil_000000000003",
+					"order_id": "ord_0000000000000003",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Ëxample “Provider” A",
+					"max_price": "0.000002",
+					"price": "0.000001",
+					"saved": "0.000001",
+					"created_at": "2026-01-01T00:02:00.000Z",
+					"ledger_height": 3,
+					"ledger_hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906"
+				}
+			],
+			"expect": {
+				"ok": false,
+				"height": 1,
+				"head": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+				"broken_at": 2,
+				"reason": "payload_hash"
+			}
+		},
+		{
+			"name": "provider renamed in fill 1",
+			"entries": [
+				{
+					"height": 1,
+					"kind": "fill",
+					"ref": "fil_000000000001",
+					"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734",
+					"prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+					"hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"created_at": "2026-01-01T00:00:00.000Z"
+				},
+				{
+					"height": 2,
+					"kind": "fill",
+					"ref": "fil_000000000002",
+					"payload_hash": "e1d63a3575042168675c5dde7338389b34c1533048f73e9fe362d75b04302d11",
+					"prev_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"created_at": "2026-01-01T00:01:00.000Z"
+				},
+				{
+					"height": 3,
+					"kind": "fill",
+					"ref": "fil_000000000003",
+					"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a",
+					"prev_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906",
+					"created_at": "2026-01-01T00:02:00.000Z"
+				}
+			],
+			"fills": [
+				{
+					"id": "fil_000000000001",
+					"order_id": "ord_0000000000000001",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Someone Else",
+					"max_price": "0.05",
+					"price": "0.032",
+					"saved": "0.018",
+					"created_at": "2026-01-01T00:00:00.000Z",
+					"ledger_height": 1,
+					"ledger_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee"
+				},
+				{
+					"id": "fil_000000000002",
+					"order_id": "ord_0000000000000002",
+					"agent": "0x2222222222222222222222222222222222222222",
+					"provider_id": "prv_bbbbbbbbbbbb",
+					"provider_name": "Example Provider B",
+					"max_price": "1",
+					"price": "0.75",
+					"saved": "0.25",
+					"created_at": "2026-01-01T00:01:00.000Z",
+					"ledger_height": 2,
+					"ledger_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be"
+				},
+				{
+					"id": "fil_000000000003",
+					"order_id": "ord_0000000000000003",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Ëxample “Provider” A",
+					"max_price": "0.000002",
+					"price": "0.000001",
+					"saved": "0.000001",
+					"created_at": "2026-01-01T00:02:00.000Z",
+					"ledger_height": 3,
+					"ledger_hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906"
+				}
+			],
+			"expect": {
+				"ok": false,
+				"height": 0,
+				"head": "0000000000000000000000000000000000000000000000000000000000000000",
+				"broken_at": 1,
+				"reason": "payload_hash"
+			}
+		},
+		{
+			"name": "entry 2 removed",
+			"entries": [
+				{
+					"height": 1,
+					"kind": "fill",
+					"ref": "fil_000000000001",
+					"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734",
+					"prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+					"hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"created_at": "2026-01-01T00:00:00.000Z"
+				},
+				{
+					"height": 3,
+					"kind": "fill",
+					"ref": "fil_000000000003",
+					"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a",
+					"prev_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906",
+					"created_at": "2026-01-01T00:02:00.000Z"
+				}
+			],
+			"fills": [
+				{
+					"id": "fil_000000000001",
+					"order_id": "ord_0000000000000001",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Example Provider A",
+					"max_price": "0.05",
+					"price": "0.032",
+					"saved": "0.018",
+					"created_at": "2026-01-01T00:00:00.000Z",
+					"ledger_height": 1,
+					"ledger_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee"
+				},
+				{
+					"id": "fil_000000000003",
+					"order_id": "ord_0000000000000003",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Ëxample “Provider” A",
+					"max_price": "0.000002",
+					"price": "0.000001",
+					"saved": "0.000001",
+					"created_at": "2026-01-01T00:02:00.000Z",
+					"ledger_height": 3,
+					"ledger_hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906"
+				}
+			],
+			"expect": {
+				"ok": false,
+				"height": 1,
+				"head": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+				"broken_at": 3,
+				"reason": "gap"
+			}
+		},
+		{
+			"name": "entry 3 points at the wrong previous hash",
+			"entries": [
+				{
+					"height": 1,
+					"kind": "fill",
+					"ref": "fil_000000000001",
+					"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734",
+					"prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+					"hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"created_at": "2026-01-01T00:00:00.000Z"
+				},
+				{
+					"height": 2,
+					"kind": "fill",
+					"ref": "fil_000000000002",
+					"payload_hash": "e1d63a3575042168675c5dde7338389b34c1533048f73e9fe362d75b04302d11",
+					"prev_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"created_at": "2026-01-01T00:01:00.000Z"
+				},
+				{
+					"height": 3,
+					"kind": "fill",
+					"ref": "fil_000000000003",
+					"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a",
+					"prev_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906",
+					"created_at": "2026-01-01T00:02:00.000Z"
+				}
+			],
+			"fills": [
+				{
+					"id": "fil_000000000001",
+					"order_id": "ord_0000000000000001",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Example Provider A",
+					"max_price": "0.05",
+					"price": "0.032",
+					"saved": "0.018",
+					"created_at": "2026-01-01T00:00:00.000Z",
+					"ledger_height": 1,
+					"ledger_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee"
+				},
+				{
+					"id": "fil_000000000002",
+					"order_id": "ord_0000000000000002",
+					"agent": "0x2222222222222222222222222222222222222222",
+					"provider_id": "prv_bbbbbbbbbbbb",
+					"provider_name": "Example Provider B",
+					"max_price": "1",
+					"price": "0.75",
+					"saved": "0.25",
+					"created_at": "2026-01-01T00:01:00.000Z",
+					"ledger_height": 2,
+					"ledger_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be"
+				},
+				{
+					"id": "fil_000000000003",
+					"order_id": "ord_0000000000000003",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Ëxample “Provider” A",
+					"max_price": "0.000002",
+					"price": "0.000001",
+					"saved": "0.000001",
+					"created_at": "2026-01-01T00:02:00.000Z",
+					"ledger_height": 3,
+					"ledger_hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906"
+				}
+			],
+			"expect": {
+				"ok": false,
+				"height": 2,
+				"head": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+				"broken_at": 3,
+				"reason": "prev_hash"
+			}
+		},
+		{
+			"name": "entry 2 hash replaced",
+			"entries": [
+				{
+					"height": 1,
+					"kind": "fill",
+					"ref": "fil_000000000001",
+					"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734",
+					"prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+					"hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"created_at": "2026-01-01T00:00:00.000Z"
+				},
+				{
+					"height": 2,
+					"kind": "fill",
+					"ref": "fil_000000000002",
+					"payload_hash": "e1d63a3575042168675c5dde7338389b34c1533048f73e9fe362d75b04302d11",
+					"prev_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+					"created_at": "2026-01-01T00:01:00.000Z"
+				},
+				{
+					"height": 3,
+					"kind": "fill",
+					"ref": "fil_000000000003",
+					"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a",
+					"prev_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906",
+					"created_at": "2026-01-01T00:02:00.000Z"
+				}
+			],
+			"fills": [
+				{
+					"id": "fil_000000000001",
+					"order_id": "ord_0000000000000001",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Example Provider A",
+					"max_price": "0.05",
+					"price": "0.032",
+					"saved": "0.018",
+					"created_at": "2026-01-01T00:00:00.000Z",
+					"ledger_height": 1,
+					"ledger_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee"
+				},
+				{
+					"id": "fil_000000000002",
+					"order_id": "ord_0000000000000002",
+					"agent": "0x2222222222222222222222222222222222222222",
+					"provider_id": "prv_bbbbbbbbbbbb",
+					"provider_name": "Example Provider B",
+					"max_price": "1",
+					"price": "0.75",
+					"saved": "0.25",
+					"created_at": "2026-01-01T00:01:00.000Z",
+					"ledger_height": 2,
+					"ledger_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be"
+				},
+				{
+					"id": "fil_000000000003",
+					"order_id": "ord_0000000000000003",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Ëxample “Provider” A",
+					"max_price": "0.000002",
+					"price": "0.000001",
+					"saved": "0.000001",
+					"created_at": "2026-01-01T00:02:00.000Z",
+					"ledger_height": 3,
+					"ledger_hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906"
+				}
+			],
+			"expect": {
+				"ok": false,
+				"height": 1,
+				"head": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+				"broken_at": 2,
+				"reason": "hash"
+			}
+		},
+		{
+			"name": "fill 3 missing",
+			"entries": [
+				{
+					"height": 1,
+					"kind": "fill",
+					"ref": "fil_000000000001",
+					"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734",
+					"prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+					"hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"created_at": "2026-01-01T00:00:00.000Z"
+				},
+				{
+					"height": 2,
+					"kind": "fill",
+					"ref": "fil_000000000002",
+					"payload_hash": "e1d63a3575042168675c5dde7338389b34c1533048f73e9fe362d75b04302d11",
+					"prev_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"created_at": "2026-01-01T00:01:00.000Z"
+				},
+				{
+					"height": 3,
+					"kind": "fill",
+					"ref": "fil_000000000003",
+					"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a",
+					"prev_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906",
+					"created_at": "2026-01-01T00:02:00.000Z"
+				}
+			],
+			"fills": [
+				{
+					"id": "fil_000000000001",
+					"order_id": "ord_0000000000000001",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Example Provider A",
+					"max_price": "0.05",
+					"price": "0.032",
+					"saved": "0.018",
+					"created_at": "2026-01-01T00:00:00.000Z",
+					"ledger_height": 1,
+					"ledger_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee"
+				},
+				{
+					"id": "fil_000000000002",
+					"order_id": "ord_0000000000000002",
+					"agent": "0x2222222222222222222222222222222222222222",
+					"provider_id": "prv_bbbbbbbbbbbb",
+					"provider_name": "Example Provider B",
+					"max_price": "1",
+					"price": "0.75",
+					"saved": "0.25",
+					"created_at": "2026-01-01T00:01:00.000Z",
+					"ledger_height": 2,
+					"ledger_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be"
+				}
+			],
+			"expect": {
+				"ok": false,
+				"height": 2,
+				"head": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+				"broken_at": 3,
+				"reason": "missing_fill"
+			}
+		},
+		{
+			"name": "fill 1 claims another height",
+			"entries": [
+				{
+					"height": 1,
+					"kind": "fill",
+					"ref": "fil_000000000001",
+					"payload_hash": "cc55932d60eccb6b8881bccfe6f52e4e6a9119b6b27e28306a86b30382dd3734",
+					"prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+					"hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"created_at": "2026-01-01T00:00:00.000Z"
+				},
+				{
+					"height": 2,
+					"kind": "fill",
+					"ref": "fil_000000000002",
+					"payload_hash": "e1d63a3575042168675c5dde7338389b34c1533048f73e9fe362d75b04302d11",
+					"prev_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee",
+					"hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"created_at": "2026-01-01T00:01:00.000Z"
+				},
+				{
+					"height": 3,
+					"kind": "fill",
+					"ref": "fil_000000000003",
+					"payload_hash": "8ab04834d0108e5d5ae5b75773542a97aeccb098d352d9e344825f33402d1d6a",
+					"prev_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be",
+					"hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906",
+					"created_at": "2026-01-01T00:02:00.000Z"
+				}
+			],
+			"fills": [
+				{
+					"id": "fil_000000000001",
+					"order_id": "ord_0000000000000001",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Example Provider A",
+					"max_price": "0.05",
+					"price": "0.032",
+					"saved": "0.018",
+					"created_at": "2026-01-01T00:00:00.000Z",
+					"ledger_height": 7,
+					"ledger_hash": "4374edd9d19cb85c02e536e5b56fb48eba6cfe973e73cda3cb86e2c5416e3dee"
+				},
+				{
+					"id": "fil_000000000002",
+					"order_id": "ord_0000000000000002",
+					"agent": "0x2222222222222222222222222222222222222222",
+					"provider_id": "prv_bbbbbbbbbbbb",
+					"provider_name": "Example Provider B",
+					"max_price": "1",
+					"price": "0.75",
+					"saved": "0.25",
+					"created_at": "2026-01-01T00:01:00.000Z",
+					"ledger_height": 2,
+					"ledger_hash": "f678f643a601085b9c98d83eb36b7761449d19d9d0f3993db8fdd6359514d0be"
+				},
+				{
+					"id": "fil_000000000003",
+					"order_id": "ord_0000000000000003",
+					"agent": "0x1111111111111111111111111111111111111111",
+					"provider_id": "prv_aaaaaaaaaaaa",
+					"provider_name": "Ëxample “Provider” A",
+					"max_price": "0.000002",
+					"price": "0.000001",
+					"saved": "0.000001",
+					"created_at": "2026-01-01T00:02:00.000Z",
+					"ledger_height": 3,
+					"ledger_hash": "82619bc9cf366f21474bc26af124f19d330804b969cb40ec6b53c5bcfa13d906"
+				}
+			],
+			"expect": {
+				"ok": false,
+				"height": 0,
+				"head": "0000000000000000000000000000000000000000000000000000000000000000",
+				"broken_at": 1,
+				"reason": "fill_mismatch"
+			}
+		}
+	]
+}

@@ -1,0 +1,139 @@
+{
+	"description": "parse: decimal USDG string -> micro-USDG integer (null = rejected). format: micro-USDG integer -> shortest exact decimal string.",
+	"parse": [
+		{
+			"input": "0.0042",
+			"micro": 4200
+		},
+		{
+			"input": "1",
+			"micro": 1000000
+		},
+		{
+			"input": "1.5",
+			"micro": 1500000
+		},
+		{
+			"input": " 2.25 ",
+			"micro": 2250000
+		},
+		{
+			"input": "0.000001",
+			"micro": 1
+		},
+		{
+			"input": "1000000",
+			"micro": 1000000000000
+		},
+		{
+			"input": "999999.999999",
+			"micro": 999999999999
+		},
+		{
+			"input": "0",
+			"micro": null
+		},
+		{
+			"input": "0.0",
+			"micro": null
+		},
+		{
+			"input": "0.0000001",
+			"micro": null
+		},
+		{
+			"input": "1000000.000001",
+			"micro": null
+		},
+		{
+			"input": "10000000",
+			"micro": null
+		},
+		{
+			"input": "-1",
+			"micro": null
+		},
+		{
+			"input": "+1",
+			"micro": null
+		},
+		{
+			"input": "1e-3",
+			"micro": null
+		},
+		{
+			"input": "1.",
+			"micro": null
+		},
+		{
+			"input": ".5",
+			"micro": null
+		},
+		{
+			"input": "",
+			"micro": null
+		},
+		{
+			"input": "abc",
+			"micro": null
+		},
+		{
+			"input": "1,5",
+			"micro": null
+		},
+		{
+			"input": "0.10",
+			"micro": 100000
+		},
+		{
+			"input": "00012.340000",
+			"micro": 12340000
+		}
+	],
+	"format": [
+		{
+			"micro": 0,
+			"text": "0"
+		},
+		{
+			"micro": 1,
+			"text": "0.000001"
+		},
+		{
+			"micro": 10,
+			"text": "0.00001"
+		},
+		{
+			"micro": 4200,
+			"text": "0.0042"
+		},
+		{
+			"micro": 1000000,
+			"text": "1"
+		},
+		{
+			"micro": 1500000,
+			"text": "1.5"
+		},
+		{
+			"micro": 1234567,
+			"text": "1.234567"
+		},
+		{
+			"micro": 999999999999,
+			"text": "999999.999999"
+		},
+		{
+			"micro": 1000000000000,
+			"text": "1000000"
+		},
+		{
+			"micro": -2500,
+			"text": "-0.0025"
+		},
+		{
+			"micro": -1000000,
+			"text": "-1"
+		}
+	]
+}

@@ -1,0 +1,126 @@
+{
+	"description": "signature = \"sha256=\" + lowercase hex(HMAC-SHA256(key = secret as UTF-8, message = timestamp + \".\" + raw body)). Verify: timestamp must be digits, signature must match ^sha256=[0-9a-f]{64}$ (else malformed); |now - timestamp| > tolerance_s -> stale_timestamp; signature mismatch (constant-time compare) -> bad_signature; then the body must parse as JSON (else malformed).",
+	"secret": "whsec_000000000000000000000000000000000000000000000000",
+	"sign": [
+		{
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39"
+		},
+		{
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"test\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[]}",
+			"signature": "sha256=a493cc768e4e5b56c871d1816c7eea37e2d9b636d8ef38ef594e07785b155ed3"
+		}
+	],
+	"verify": [
+		{
+			"name": "valid",
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225600,
+			"tolerance_s": 300,
+			"ok": true
+		},
+		{
+			"name": "valid at edge of window",
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225900,
+			"tolerance_s": 300,
+			"ok": true
+		},
+		{
+			"name": "too old",
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225901,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "stale_timestamp"
+		},
+		{
+			"name": "from the future",
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225299,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "stale_timestamp"
+		},
+		{
+			"name": "body changed",
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.06\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225600,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "bad_signature"
+		},
+		{
+			"name": "timestamp changed",
+			"timestamp": "1767225601",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225600,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "bad_signature"
+		},
+		{
+			"name": "wrong secret",
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=4fe6f0d55b105e566d513e905b917134d0fb54cf846fccbbb7f69f9c18c04f65",
+			"now": 1767225600,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "bad_signature"
+		},
+		{
+			"name": "missing prefix",
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225600,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "malformed"
+		},
+		{
+			"name": "uppercase hex",
+			"timestamp": "1767225600",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1E6965C608F7C4A573F2857B994D7D99DA83B4DF5B8E4A9E8DFA6E2A245F2B39",
+			"now": 1767225600,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "malformed"
+		},
+		{
+			"name": "missing timestamp",
+			"timestamp": "",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225600,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "malformed"
+		},
+		{
+			"name": "non-numeric timestamp",
+			"timestamp": "12:00",
+			"body": "{\"event\":\"orders.created\",\"sent_at\":\"2026-01-01T00:00:00.000Z\",\"orders\":[{\"id\":\"ord_0000000000000001\",\"type\":\"web_search\",\"max_price\":\"0.05\",\"request\":\"Top 10 results for “x402”\"}]}",
+			"signature": "sha256=1e6965c608f7c4a573f2857b994d7d99da83b4df5b8e4a9e8dfa6e2a245f2b39",
+			"now": 1767225600,
+			"tolerance_s": 300,
+			"ok": false,
+			"error": "malformed"
+		}
+	]
+}
