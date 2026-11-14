@@ -1,0 +1,55 @@
+{
+	"name": "@filobook/sdk",
+	"version": "0.1.0",
+	"description": "TypeScript SDK for FiloBook, the order book for x402 agent calls: API client, ledger verifier and webhook signatures.",
+	"license": "MIT",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/filobook/filobook-sdk.git",
+		"directory": "typescript"
+	},
+	"homepage": "https://docs.filobook.run",
+	"keywords": [
+		"filobook",
+		"x402",
+		"order-book",
+		"agents",
+		"usdg",
+		"robinhood-chain"
+	],
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"sideEffects": false,
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"build": "tsup",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit",
+		"vectors": "pnpm build && node scripts/vectors.mjs"
+	},
+	"devDependencies": {
+		"@types/node": "^26.6.6",
+		"tsup": "^9.0.0",
+		"typescript": "^6.0.3",
+		"vitest": "^5.1.0"
+	}
+}
