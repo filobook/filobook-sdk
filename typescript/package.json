@@ -3,6 +3,7 @@
 	"version": "0.1.0",
 	"description": "TypeScript SDK for FiloBook, the order book for x402 agent calls: API client, ledger verifier and webhook signatures.",
 	"license": "MIT",
+	"packageManager": "pnpm@12.16.1",
 	"type": "module",
 	"repository": {
 		"type": "git",
