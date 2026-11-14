@@ -1,0 +1,30 @@
+[package]
+name = "filobook"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.88"
+license = "MIT"
+description = "Rust SDK for FiloBook, the order book for x402 agent calls: API client, price math, canonical JSON, ledger verifier and webhook signatures."
+repository = "https://github.com/filobook/filobook-sdk"
+homepage = "https://docs.filobook.run"
+readme = "README.md"
+keywords = ["filobook", "x402", "order-book", "agents", "usdg"]
+categories = ["api-bindings", "cryptography"]
+
+[features]
+default = ["client"]
+# Async HTTP client for https://dapp.filobook.run (reqwest + rustls).
+client = ["dep:reqwest", "dep:futures-util"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+hmac = "0.12"
+hex = "0.4"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"], optional = true }
+futures-util = { version = "0.3", default-features = false, features = ["std"], optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+wiremock = "0.6"
