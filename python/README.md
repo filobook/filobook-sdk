@@ -135,7 +135,7 @@ FiloBook(
     base_url="https://dapp.filobook.run",
     timeout=15.0,          # seconds per request
     transport=None,        # a callable HttpRequest -> HttpResponse; defaults to urllib
-    user_agent=None,       # defaults to filobook-sdk-python/0.1.0
+    user_agent=None,       # defaults to filobook-sdk-python/0.1.1
 )
 ```
 

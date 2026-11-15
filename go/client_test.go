@@ -90,7 +90,7 @@ func TestClientSendsKeyBodyAndHeaders(t *testing.T) {
 	if got := c.Header.Get("Content-Type"); got != "application/json" {
 		t.Errorf("Content-Type = %q", got)
 	}
-	if got := c.Header.Get("User-Agent"); got != "filobook-sdk-go/0.1.0" {
+	if got := c.Header.Get("User-Agent"); got != "filobook-sdk-go/0.1.1" {
 		t.Errorf("User-Agent = %q", got)
 	}
 	if got := c.Header.Get("Accept"); got != "application/json" {

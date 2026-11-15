@@ -39,7 +39,7 @@ from .types import (
 )
 
 DEFAULT_BASE_URL = "https://dapp.filobook.run"
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 DEFAULT_TIMEOUT_S = 15.0
 
 

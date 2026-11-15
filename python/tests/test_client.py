@@ -46,7 +46,7 @@ def test_sends_api_key_json_body_and_headers() -> None:
     assert req.method == "POST"
     assert req.headers["authorization"] == "Bearer fb_live_test"
     assert req.headers["content-type"] == "application/json"
-    assert req.headers["user-agent"] == "filobook-sdk-python/0.1.0"
+    assert req.headers["user-agent"] == "filobook-sdk-python/0.1.1"
     assert req.headers["accept"] == "application/json"
     assert req.timeout == 15.0
     assert req.body is not None

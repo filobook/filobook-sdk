@@ -19,7 +19,7 @@ const (
 	// DefaultBaseURL is the live API.
 	DefaultBaseURL = "https://dapp.filobook.run"
 	// Version is this SDK's version.
-	Version = "0.1.0"
+	Version = "0.1.1"
 	// DefaultTimeout is the per-request timeout.
 	DefaultTimeout = 15 * time.Second
 )

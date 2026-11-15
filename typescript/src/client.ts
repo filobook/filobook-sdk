@@ -21,7 +21,7 @@ import type {
 } from "./types";
 
 export const DEFAULT_BASE_URL = "https://dapp.filobook.run";
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";
 
 export type ClientOptions = {
 	/** An API key (fb_live_…), created in the dapp under API keys. Needed for anything that posts or reads "me". */

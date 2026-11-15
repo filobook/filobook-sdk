@@ -22,7 +22,7 @@ The repository is not public yet, so `go get` will not resolve until it is. Unti
 
 ```text
 // go.mod
-require github.com/filobook/filobook-sdk/go v0.1.0
+require github.com/filobook/filobook-sdk/go v0.1.1
 replace github.com/filobook/filobook-sdk/go => ../filobook-sdk/go
 ```
 

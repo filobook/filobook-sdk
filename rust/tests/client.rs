@@ -32,7 +32,7 @@ async fn sends_api_key_json_body_and_user_agent() {
         .and(path("/v1/orders"))
         .and(header("authorization", "Bearer fb_live_test"))
         .and(header("content-type", "application/json"))
-        .and(header("user-agent", "filobook-sdk-rust/0.1.0"))
+        .and(header("user-agent", "filobook-sdk-rust/0.1.1"))
         .and(body_json(json!({ "request": "r", "type": "web_search", "max_price": "0.05", "quote_window_s": 30 })))
         .respond_with(ResponseTemplate::new(201).set_body_json(order_json("ord_1")))
         .expect(1)
