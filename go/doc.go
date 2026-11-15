@@ -9,6 +9,6 @@
 //     VerifyEntries / Client.VerifyLedger to recompute the whole chain without trusting the server.
 //   - SignWebhook, VerifyWebhook and VerifyWebhookRequest for the provider feed webhook.
 //
-// No settlement contract is deployed yet: a fill records who won an order and at what price, and no funds
-// move. The package uses the standard library only.
+// Funded fills settle in USDG on Robinhood Chain through the FiloBook escrow; this version does not wrap the
+// fill's settlement field or the escrow endpoints yet. The package uses the standard library only.
 package filobook

@@ -235,7 +235,7 @@ pub struct Quote {
     pub expires_at: String,
 }
 
-/// A filled order: who won and at what price. No funds move yet.
+/// A filled order: who won and at what price. Funded fills also settle in USDG on Robinhood Chain (see the `settlement` field in the raw response).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[allow(missing_docs)]
 pub struct Fill {

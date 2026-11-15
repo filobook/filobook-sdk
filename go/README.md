@@ -10,7 +10,7 @@ This package gives you:
 
 Standard library only. Go 1.22 or newer.
 
-**Status.** No settlement contract is deployed yet: a fill records which provider won and at what price, and no funds move. $FILO has not launched. Both will change the API and this SDK when they happen.
+**Status.** Fills settle in USDG on Robinhood Chain through the FiloBook escrow, [`0x5689Cd95D9106C7498D1760058d6b85D8A9F2288`](https://robinhoodchain.blockscout.com/address/0x5689Cd95D9106C7498D1760058d6b85D8A9F2288), when the agent has deposited USDG and set limits that cover the order; other fills are recorded in the public ledger only. The escrow is source-verified but not audited, and deposits are capped at 100 USDG. $FILO is live at `0x6dfcdbfc63015cf4ac4ba4fa69ce9e68603a05cf`. This SDK version does not wrap the fill's `settlement` field or the escrow endpoints yet; read them from the raw response (see the [API docs](https://docs.filobook.run/concepts/settlement)).
 
 ## Install
 

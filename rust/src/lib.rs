@@ -9,7 +9,8 @@
 //! Everything except the client builds with `--no-default-features`, with no async runtime or HTTP stack.
 //! The protocol rules are described in `spec/PROTOCOL.md` in the SDK repository.
 //!
-//! No settlement contract is deployed yet: a fill records who won and at what price, and no funds move.
+//! Funded fills settle in USDG on Robinhood Chain through the FiloBook escrow; this version does not wrap the
+//! fill's `settlement` field or the escrow endpoints yet.
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
